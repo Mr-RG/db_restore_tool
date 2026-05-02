@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 
-namespace mssql_db_restore
+namespace db_restore_tool
 {
     public interface IConfigService
     {
@@ -52,9 +52,9 @@ namespace mssql_db_restore
                 ServerName = "RG-PC",
                 Username = "sa",
                 Password = "Admin@123",
-                TempDirectory = @"C:\mssql_db_restore\TempDB",
+                TempDirectory = @"C:\db_restore_tool\TempDB",
                 ZipPassword = new System.Collections.Generic.List<string> { "", "" },
-                DataLocation = @"C:\mssql_db_restore\MSSQL-DATA"
+                DataLocation = @"C:\db_restore_tool\MSSQL-DATA"
             };
 
             var options = new JsonSerializerOptions { WriteIndented = true };

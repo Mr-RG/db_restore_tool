@@ -9,6 +9,8 @@
         <SelfContained>true</SelfContained>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <RootNamespace>db_restore_tool</RootNamespace>
+        <AssemblyName>db_restore_tool</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,12 +23,6 @@
     <ItemGroup>
         <!-- Embed the zip folder content for logic that expects resources -->
         <EmbeddedResource Include="zip\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="MsSqlRestoreTool.Tests\**" />
-        <EmbeddedResource Remove="MsSqlRestoreTool.Tests\**" />
-        <None Remove="MsSqlRestoreTool.Tests\**" />
     </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace mssql_db_restore
+namespace db_restore_tool
 {
     public interface ISevenZipBootstrapper
     {
@@ -20,7 +20,7 @@ namespace mssql_db_restore
 
         public string EnsureBinariesExist()
         {
-            string tempFolder = Path.Combine(Path.GetTempPath(), "MsSqlRestoreTool", "7z");
+            string tempFolder = Path.Combine(Path.GetTempPath(), "db_restore_tool", "7z");
             if (!_fileSystem.DirectoryExists(tempFolder)) _fileSystem.CreateDirectory(tempFolder);
 
             string sevenZipExe = Path.Combine(tempFolder, "7z.exe");
@@ -29,8 +29,8 @@ namespace mssql_db_restore
             if (!_fileSystem.FileExists(sevenZipExe) || !_fileSystem.FileExists(sevenZipDll))
             {
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                ExtractResource(assembly, "MsSqlRestoreTool.zip.7z.exe", sevenZipExe);
-                ExtractResource(assembly, "MsSqlRestoreTool.zip.7z.dll", sevenZipDll);
+                ExtractResource(assembly, "db_restore_tool.zip.7z.exe", sevenZipExe);
+                ExtractResource(assembly, "db_restore_tool.zip.7z.dll", sevenZipDll);
             }
 
             return sevenZipExe;

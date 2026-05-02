@@ -3,11 +3,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using mssql_db_restore.Sql;
-using mssql_db_restore.Sql.Queries;
-using mssql_db_restore.Sql.Commands;
+using db_restore_tool.Database;
+using db_restore_tool.Database.Queries;
+using db_restore_tool.Database.Commands;
 
-namespace mssql_db_restore
+namespace db_restore_tool
 {
     public class DatabaseRestoreService
     {

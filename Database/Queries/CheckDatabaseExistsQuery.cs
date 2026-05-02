@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 
-namespace mssql_db_restore.Sql.Queries
+namespace db_restore_tool.Database.Queries
 {
     public class CheckDatabaseExistsQuery
     {

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace mssql_db_restore
+namespace db_restore_tool
 {
     public interface IDiskSpaceValidator
     {

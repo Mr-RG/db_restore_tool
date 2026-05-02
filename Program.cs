@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace mssql_db_restore
+namespace db_restore_tool
 {
     class Program
     {
@@ -48,13 +48,13 @@ namespace mssql_db_restore
                 services.AddSingleton<IFileSystemService, FileSystemService>();
 
                 // Register SQL CQRS
-                services.AddSingleton<mssql_db_restore.Sql.IConnectionProvider, mssql_db_restore.Sql.ConnectionProvider>();
-                services.AddSingleton<mssql_db_restore.Sql.Queries.CheckDatabaseExistsQuery>();
-                services.AddSingleton<mssql_db_restore.Sql.Queries.GetDatabaseSizeQuery>();
-                services.AddSingleton<mssql_db_restore.Sql.Queries.GetBackupMetadataQuery>();
-                services.AddSingleton<mssql_db_restore.Sql.Commands.KillConnectionsCommand>();
-                services.AddSingleton<mssql_db_restore.Sql.Commands.DropDatabaseCommand>();
-                services.AddSingleton<mssql_db_restore.Sql.Commands.RestoreDatabaseCommand>();
+                services.AddSingleton<db_restore_tool.Database.IConnectionProvider, db_restore_tool.Database.ConnectionProvider>();
+                services.AddSingleton<db_restore_tool.Database.Queries.CheckDatabaseExistsQuery>();
+                services.AddSingleton<db_restore_tool.Database.Queries.GetDatabaseSizeQuery>();
+                services.AddSingleton<db_restore_tool.Database.Queries.GetBackupMetadataQuery>();
+                services.AddSingleton<db_restore_tool.Database.Commands.KillConnectionsCommand>();
+                services.AddSingleton<db_restore_tool.Database.Commands.DropDatabaseCommand>();
+                services.AddSingleton<db_restore_tool.Database.Commands.RestoreDatabaseCommand>();
                 
                 services.AddSingleton<DatabaseRestoreService>();
 

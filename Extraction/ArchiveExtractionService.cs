@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace mssql_db_restore
+namespace db_restore_tool
 {
     public interface IArchiveExtractionService
     {

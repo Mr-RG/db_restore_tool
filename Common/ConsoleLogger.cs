@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace mssql_db_restore
+namespace db_restore_tool
 {
     public interface IConsoleLogger
     {

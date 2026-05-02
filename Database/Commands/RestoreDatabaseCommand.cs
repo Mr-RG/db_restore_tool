@@ -3,9 +3,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
-using mssql_db_restore.Sql.Queries;
+using db_restore_tool.Database.Queries;
 
-namespace mssql_db_restore.Sql.Commands
+namespace db_restore_tool.Database.Commands
 {
     public class RestoreDatabaseCommand
     {
