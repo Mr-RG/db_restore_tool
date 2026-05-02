@@ -2,18 +2,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using db_restore_tool.Models;
 
-namespace db_restore_tool.Database.Queries
+namespace db_restore_tool.Database.Mssql.Queries
 {
-    public class BackupMetadata
-    {
-        public string DatabaseName { get; set; }
-        public long RequiredSpaceBytes { get; set; }
-        public string LogicalDataName { get; set; }
-        public string LogicalLogName { get; set; }
-        public bool IsValid => !string.IsNullOrEmpty(LogicalDataName) && !string.IsNullOrEmpty(LogicalLogName);
-    }
-
     public class GetBackupMetadataQuery
     {
         private readonly IConnectionProvider _connectionProvider;

@@ -3,30 +3,8 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace db_restore_tool
+namespace db_restore_tool.Models
 {
-    public class RestoreConfig
-    {
-        public string ServerName { get; init; }
-        public string Username { get; init; }
-        public string Password { get; init; }
-        public string TempDirectory { get; init; }
-
-        [JsonConverter(typeof(SingleOrArrayConverter<string>))]
-        public List<string> ZipPassword { get; init; }
-
-        public string DataLocation { get; init; }
-
-        public void Validate()
-        {
-            if (string.IsNullOrWhiteSpace(ServerName))
-                throw new Exception("Config error: 'ServerName' is missing or empty.");
-            
-            if (string.IsNullOrWhiteSpace(DataLocation))
-                throw new Exception("Config error: 'DataLocation' is missing or empty.");
-        }
-    }
-
     public class SingleOrArrayConverter<T> : JsonConverter<List<T>>
     {
         public override List<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

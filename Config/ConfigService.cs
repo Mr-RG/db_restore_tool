@@ -1,12 +1,13 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using db_restore_tool.Models;
 
-namespace db_restore_tool
+namespace db_restore_tool.Config
 {
     public interface IConfigService
     {
-        RestoreConfig LoadConfig();
+        AppConfig LoadConfig();
     }
 
     public class ConfigService : IConfigService
@@ -19,7 +20,7 @@ namespace db_restore_tool
             _configPath = Path.Combine(exeDirectory, "config.json");
         }
 
-        public RestoreConfig LoadConfig()
+        public AppConfig LoadConfig()
         {
             if (!File.Exists(_configPath))
             {
@@ -30,7 +31,24 @@ namespace db_restore_tool
             try
             {
                 string configJson = File.ReadAllText(_configPath);
-                var config = JsonSerializer.Deserialize<RestoreConfig>(configJson);
+                
+                // Add auto-migration logic here if it's the old format? 
+                // Since this is a new feature we'll just parse the new format.
+                // We could use JsonDocument to detect old structure.
+                using (var doc = JsonDocument.Parse(configJson))
+                {
+                    if (doc.RootElement.TryGetProperty("ServerName", out _))
+                    {
+                        // Old format detected
+                        throw new Exception("Old configuration format detected. Please delete config.json and let the application generate a new one, or manually update it to the new multi-server format.");
+                    }
+                }
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var config = JsonSerializer.Deserialize<AppConfig>(configJson, options);
 
                 if (config == null)
                     throw new Exception("Configuration is null.");
@@ -47,14 +65,35 @@ namespace db_restore_tool
 
         private void CreateDefaultConfig(string path)
         {
-            var defaultConfig = new RestoreConfig
+            var defaultConfig = new AppConfig
             {
-                ServerName = "RG-PC",
-                Username = "sa",
-                Password = "Admin@123",
-                TempDirectory = @"C:\db_restore_tool\TempDB",
-                ZipPassword = new System.Collections.Generic.List<string> { "", "" },
-                DataLocation = @"C:\db_restore_tool\MSSQL-DATA"
+                DefaultServer = "local-mssql",
+                Servers = new System.Collections.Generic.List<ServerConfig>
+                {
+                    new ServerConfig
+                    {
+                        Name = "local-mssql",
+                        Type = "MSSQL",
+                        ServerName = "RG-PC",
+                        Username = "sa",
+                        Password = "Admin@123",
+                        DataLocation = @"C:\DbRestoreTool\MSSQL-DATA"
+                    },
+                    new ServerConfig
+                    {
+                        Name = "dev-postgres",
+                        Type = "PostgreSQL",
+                        Host = "localhost",
+                        Port = 5432,
+                        Username = "postgres",
+                        Password = "admin123",
+                        // DataLocation = @"C:\db_restore_tool\PG-DATA"
+                    }
+                },
+                TempDirectory = @"C:\DbRestoreTool\TempDB",
+                QueryPath = @"C:\DbRestoreTool\query.sql",
+                QueryResultsPath = @"C:\DbRestoreTool\Result",
+                ZipPassword = new System.Collections.Generic.List<string> { "", "" }
             };
 
             var options = new JsonSerializerOptions { WriteIndented = true };

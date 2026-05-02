@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 
-namespace db_restore_tool.Database.Queries
+namespace db_restore_tool.Database.Mssql.Queries
 {
     public class GetDatabaseSizeQuery
     {
