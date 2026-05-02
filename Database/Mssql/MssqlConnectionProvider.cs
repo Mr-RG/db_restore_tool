@@ -2,8 +2,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using db_restore_tool.Models;
 
-namespace db_restore_tool.Database
+namespace db_restore_tool.Database.Mssql
 {
     public interface IConnectionProvider
     {
@@ -12,12 +13,12 @@ namespace db_restore_tool.Database
         Task<SqlConnection> GetOpenConnectionAsync(string database = "master", CancellationToken cancellationToken = default);
     }
 
-    public class ConnectionProvider : IConnectionProvider
+    public class MssqlConnectionProvider : IConnectionProvider
     {
-        private readonly RestoreConfig _config;
+        private readonly ServerConfig _config;
         private string _workingConnectionString;
 
-        public ConnectionProvider(RestoreConfig config)
+        public MssqlConnectionProvider(ServerConfig config)
         {
             _config = config;
         }

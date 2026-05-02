@@ -17,6 +17,7 @@
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.3" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
         <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="181.15.0" />
+        <PackageReference Include="Npgsql" Version="10.0.2" />
         <PackageReference Include="System.CommandLine" Version="2.0.3" />
     </ItemGroup>
 

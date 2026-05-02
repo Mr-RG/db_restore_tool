@@ -10,17 +10,17 @@ namespace db_restore_tool
     public interface IArchiveExtractionService
     {
         bool IsArchive(string path);
-        Task<string> ExtractArchiveAsync(string archivePath, Action<int> progressCallback, CancellationToken cancellationToken);
+        Task<string> ExtractArchiveAsync(string archivePath, string extractPath, string serverType, Action<int> progressCallback, CancellationToken cancellationToken);
         void CleanupTempDirectory(string tempDirectory);
     }
 
     public class ArchiveExtractionService : IArchiveExtractionService
     {
-        private readonly RestoreConfig _config;
+        private readonly db_restore_tool.Models.AppConfig _config;
         private readonly IFileSystemService _fileSystem;
         private readonly ISevenZipBootstrapper _sevenZipBootstrapper;
         public ArchiveExtractionService(
-            RestoreConfig config, 
+            db_restore_tool.Models.AppConfig config, 
             IFileSystemService fileSystem, 
             ISevenZipBootstrapper sevenZipBootstrapper)
         {
@@ -35,10 +35,9 @@ namespace db_restore_tool
             return ext == ".7z" || ext == ".zip" || ext == ".rar";
         }
 
-        public async Task<string> ExtractArchiveAsync(string archivePath, Action<int> progressCallback, CancellationToken cancellationToken)
+        public async Task<string> ExtractArchiveAsync(string archivePath, string extractPath, string serverType, Action<int> progressCallback, CancellationToken cancellationToken)
         {
             string sevenZipExe = _sevenZipBootstrapper.EnsureBinariesExist();
-            string extractPath = Path.Combine(_config.TempDirectory);
             _fileSystem.CreateDirectory(extractPath);
 
             var passwords = _config.ZipPassword ?? new List<string>();
@@ -65,7 +64,7 @@ namespace db_restore_tool
                 throw new Exception("7-Zip extraction failed with all provided passwords.");
             }
 
-            return FindBakFile(extractPath);
+            return FindRestoreFile(extractPath, serverType);
         }
 
         public void CleanupTempDirectory(string tempDirectory)
@@ -85,14 +84,23 @@ namespace db_restore_tool
             }
         }
 
-        private string FindBakFile(string extractPath)
+        private string FindRestoreFile(string extractPath, string serverType)
         {
-            var bakFiles = _fileSystem.GetFiles(extractPath, "*.bak", SearchOption.TopDirectoryOnly);
-            var recentBakPath = bakFiles.OrderByDescending(f => _fileSystem.GetFileCreationTime(f)).FirstOrDefault();
+            string[] extensions = serverType.ToUpperInvariant() switch
+            {
+                "MSSQL" => new[] { "*.bak" },
+                "POSTGRESQL" => new[] { "*.sql", "*.dump", "*.backup" },
+                _ => new[] { "*.bak", "*.sql", "*.dump" }
+            };
 
-            if (recentBakPath == null) throw new FileNotFoundException("No .bak file found after extraction.");
+            foreach (var ext in extensions)
+            {
+                var files = _fileSystem.GetFiles(extractPath, ext, SearchOption.TopDirectoryOnly);
+                if (files.Any())
+                    return files.OrderByDescending(f => _fileSystem.GetFileCreationTime(f)).First();
+            }
 
-            return recentBakPath;
+            throw new FileNotFoundException($"No valid restore file found after extraction for server type '{serverType}'.");
         }
 
         private async Task<bool> TryExtractWithPasswordAsync(string sevenZipExe, string archivePath, string extractPath, string password, Action<int> progressCallback, CancellationToken cancellationToken = default)
